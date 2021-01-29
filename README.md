@@ -1,5 +1,8 @@
 # pic
 
+一个Pixiv的第三方浏览  
+学习自[pixiv-viwer](https://github.com/journey-ad/pixiv-viewer)
+
 ## Project setup
 ```
 npm install
