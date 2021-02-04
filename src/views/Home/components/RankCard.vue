@@ -11,6 +11,8 @@
 </template>
 
 <script>
+import { Cell, Swipe, SwipeItem, Icon} from 'vant'
+import api from '@/api'
 export default {
   data() {
     return {
@@ -26,6 +28,10 @@ export default {
           src: art.image[0].m
         }
       })
+    }
+  },
+  methods: {
+    async getRankList() {
     }
   }
 }
