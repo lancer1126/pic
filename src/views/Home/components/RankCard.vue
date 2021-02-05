@@ -6,14 +6,19 @@
         <span class="title">排行榜</span>
       </template>
     </van-cell>
-
+    <div class="card-box">
+    </div>
   </div>
 </template>
 
 <script>
 import { Cell, Swipe, SwipeItem, Icon} from 'vant'
 import api from '@/api'
+import ImageCard from "../../../components/ImageCard";
 export default {
+  components: {
+    ImageCard
+  },
   data() {
     return {
       artList: []
