@@ -6,6 +6,7 @@
         v-lazy="artwork.images[0].m"
         :alt="artwork.title"
         class="image"
+        :class="{censored: isCensored(artwork)}"
     />
     <van-tag class="tag-r18" round :color="tagText==='R-18'?'#fb7299':'#ff3f3f'" v-if="tagText">{{tagText}}</van-tag>
     <div class="layer-num" v-if="mode ==='cover' && artwork.count > 1">
@@ -25,7 +26,7 @@
 
 <script>
 import { Tag } from 'vant'
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 export default {
   components: {
     [Tag.name]: Tag
@@ -50,9 +51,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-
-    }),
+    ...mapGetters(["isCensored"]),
     tagText() {
       if (this.artwork.x_restrict === 1) {
         return 'R-18'

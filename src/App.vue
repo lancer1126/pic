@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import Preload from './components/Preload'
+import Preload from '@/components/Preload'
 export default {
   components: {
     Preload

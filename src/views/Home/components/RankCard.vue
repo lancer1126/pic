@@ -7,16 +7,26 @@
       </template>
     </van-cell>
     <div class="card-box">
+      <van-swipe class="swipe-wrap" :loop="false" :show-indicators="false" :width="300">
+        <van-swipe-item class="swipe-item" v-for="art in artList.slice(0, 6)" :key="art.id">
+          <ImageCard mode="meta" :artwork="art" @click-card="toArtwork($event)" />
+        </van-swipe-item>
+      </van-swipe>
     </div>
   </div>
 </template>
 
 <script>
-import { Cell, Swipe, SwipeItem, Icon} from 'vant'
+import { Cell, Swipe, SwipeItem, Icon } from 'vant'
+import ImageCard from "@/components/ImageCard";
 import api from '@/api'
-import ImageCard from "../../../components/ImageCard";
 export default {
+  name: 'RankCard',
   components: {
+    [Cell.name]: Cell,
+    [Swipe.name]: Swipe,
+    [SwipeItem.name]: SwipeItem,
+    [Icon.name]: Icon,
     ImageCard
   },
   data() {
@@ -36,8 +46,26 @@ export default {
     }
   },
   methods: {
-    async getRankList() {
+    async getRankList () {
+      let res = await api.getRankList('week')
+      if (res.status === 0) {
+        this.artList = res.data
+      } else {
+        this.$toast({
+          message: res.msg,
+          icon: require('@/svg/error.svg')
+        })
+      }
+    },
+    toArtwork (id) {
+      this.$router.push({
+        name: 'Artwork',
+        params: { id, list: this.artList }
+      })
     }
+  },
+  mounted() {
+    this.getRankList()
   }
 }
 </script>
