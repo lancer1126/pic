@@ -1,16 +1,19 @@
 <template>
   <div class="home">
     <RankCard></RankCard>
+    <Daily></Daily>
   </div>
 </template>
 
 <script>
 import RankCard from "./components/RankCard";
+import Daily from "@/views/Home/components/Daily";
 
 export default {
   name: "Home",
   components: {
-    RankCard
+    RankCard,
+    Daily
   },
   data() {
     return {
