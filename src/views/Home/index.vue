@@ -7,7 +7,7 @@
 
 <script>
 import RankCard from "./components/RankCard";
-import Daily from "@/views/Home/components/Daily";
+import Daily from "./components/Daily";
 
 export default {
   name: "Home",

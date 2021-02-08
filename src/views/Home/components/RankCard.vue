@@ -1,15 +1,12 @@
 <template>
   <div class="rank-card">
-
     <van-cell class="cell" :border="false" is-link to="/rank/daily">
       <template #title>
         <Icon class="icon crown" name="crown"></Icon>
         <span class="title">排行榜</span>
       </template>
     </van-cell>
-
     <div class="card-box">
-
       <van-swipe class="swipe-wrap" :loop="false" :show-indicators="false" :width="300">
         <van-swipe-item class="swipe-item" v-for="art in artList.slice(0, 6)" :key="art.id">
           <ImageCard mode="meta" :artwork="art" @click-card="toArtwork($event)" />
@@ -23,15 +20,14 @@
           </ImageSlide>
         </van-swipe-item>
       </van-swipe>
-
     </div>
   </div>
 </template>
 
 <script>
 import { Cell, Swipe, SwipeItem, Icon } from 'vant'
-import ImageCard from "@/components/ImageCard";
-import ImageSlide from "@/components/ImageSlide";
+import ImageCard from '@/components/ImageCard'
+import ImageSlide from '@/components/ImageSlide'
 import api from '@/api'
 export default {
   name: 'RankCard',
@@ -54,7 +50,7 @@ export default {
       return artList.map(art => {
         return {
           title: art.title,
-          src: art.image[0].m
+          src: art.images[0].m
         }
       })
     }
@@ -67,7 +63,7 @@ export default {
       } else {
         this.$toast({
           message: res.msg,
-          icon: require('@/svg/error.svg')
+          icon: require("@/svg/error.svg")
         })
       }
     },

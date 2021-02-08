@@ -10,12 +10,12 @@
 </template>
 
 <script>
-import PageLoading from "../components/PageLoading";
+import PageLoading from "@/components/PageLoading";
 
 export default {
   data() {
     return {
-      transitionName: 'fade',
+      transitionName: "fade",
       loading: false
     }
   },

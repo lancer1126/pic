@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import Nav from "../components/Nav";
+import Nav from "@/components/Nav";
 
 export default {
   data() {
@@ -37,8 +37,6 @@ export default {
   box-sizing: border-box;
 
   &.safe-area {
-    //padding-top: 60px;
-    //height: calc(100vh - 60px);
     padding-top: env(safe-area-inset-top);
     height: calc(100vh - env(safe-area-inset-top));
   }
