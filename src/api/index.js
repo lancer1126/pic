@@ -22,6 +22,33 @@ const imgProxy = url => {
   return result
 }
 
+const parseUser = data => {
+  const { user, profile, workspace } = data
+  let { id, account, name, comment } = user
+  let { background_image_url, birth, birth_day, gender, is_premium, is_using_custom_profile_image, job, total_follow_users, total_mypixiv_users, total_illust_bookmarks_public, total_illusts, twitter_account, twitter_url, webpage } = profile
+
+  return {
+    id,
+    account,
+    name,
+    comment,
+    avatar: imgProxy(user.profile_image_urls.medium),
+    bgcover: background_image_url,
+    birth: `${birth}-${birth_day}`,
+    gender,
+    is_premium,
+    is_using_custom_profile_image,
+    job,
+    follow: total_follow_users,
+    friend: total_mypixiv_users,
+    bookmarks: total_illust_bookmarks_public,
+    illusts: total_illusts,
+    twitter_account,
+    twitter_url,
+    webpage,
+    workspace
+  }
+}
 
 const parseIllust = data => {
   let {id, title, caption, create_date, tags, tools, width, height, x_restrict, total_view, total_bookmarks, type} = data
