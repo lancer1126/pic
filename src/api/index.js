@@ -98,6 +98,18 @@ const parseIllust = data => {
 const api = {
   /**
    *
+   * @param {Number} id 作品ID
+   * @param {Number} index 页数 0起始
+   */
+  url(id, index) {
+    if (!index) {
+      return `https://pixiv.cat/${id}.png`
+    } else {
+      return `https://pixiv.cat/${id}-${index}.png`
+    }
+  },
+  /**
+   *
    * @param {String} mode 排行榜类型  ['day', 'week', 'month', 'week_rookie', 'week_original', 'day_male', 'day_female', 'day_r18', 'week_r18', 'day_male_r18', 'day_female_r18', 'week_r18g']
    * @param {Number} page 页数
    * @param {String} date YYYY-MM-DD 默认为「前天」
