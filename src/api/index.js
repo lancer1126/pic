@@ -108,6 +108,63 @@ const api = {
       return `https://pixiv.cat/${id}-${index}.png`
     }
   },
+
+  /**
+   *
+   * @param {Number} offset 偏移值
+   * @param {Number} per_page 每页数量
+   */
+  async getLatest(offset = 0, per_page = 40) {
+    let res = await get('/v1/', {
+      type: 'latest',
+      offset,
+      per_page
+    })
+
+    let data, artList
+    if (res.status === 'success') {
+      data = res.response
+    } else if (res.error) {
+      return {
+        status: -1,
+        msg: res.error.user_message || res.error.message
+      }
+    } else {
+      return {
+        status: -1,
+        msg: '未知错误'
+      }
+    }
+
+    artList = data.map(art => {
+      let { id, title, caption, tags, tools, width, height, age_limit } = art
+      return {
+        id,
+        title,
+        caption,
+        author: {
+          id: art.user.id,
+          name: art.user.name,
+          avatar: imgProxy(art.user.profile_image_urls.px_50x50)
+        },
+        images: [{
+          s: imgProxy(art.image_urls.px_128x128),
+          m: imgProxy(art.image_urls.px_480mw),
+          l: imgProxy(art.image_urls.large),
+          o: imgProxy(art.image_urls.large)
+        }],
+        tags,
+        tools,
+        width,
+        height,
+        count: art.page_count,
+        age_limit
+      }
+    })
+
+    return { status: 0, data: artList }
+  },
+
   /**
    *
    * @param {String} mode 排行榜类型  ['day', 'week', 'month', 'week_rookie', 'week_original', 'day_male', 'day_female', 'day_r18', 'week_r18', 'day_male_r18', 'day_female_r18', 'week_r18g']
