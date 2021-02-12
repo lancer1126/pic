@@ -167,6 +167,50 @@ const api = {
 
   /**
    *
+   * @param {Number} id 作品ID
+   * @param {Number} page 页数 [1,5]
+   */
+  async getRelated(id, page = 1) {
+    let relatedList
+    if (!SessionStorage.has(`relatedList_${id}_p${page}`)) {
+
+      let res = await get('/pixiv/', {
+        type: 'related',
+        id,
+        page
+      })
+
+      let data
+      if (res.illusts) {
+        data = res.illusts
+      } else if (res.error) {
+        return {
+          status: -1,
+          msg: res.error.user_message || res.error.message
+        }
+      } else {
+        return {
+          status: -1,
+          msg: '未知错误'
+        }
+      }
+
+      relatedList = data.map(art => {
+        return parseIllust(art)
+      })
+
+      SessionStorage.set(`relatedList_${id}_p${page}`, relatedList, 60 * 60 * 3)
+    } else {
+      relatedList = SessionStorage.get(`relatedList_${id}_p${page}`)
+    }
+
+
+    return { status: 0, data: relatedList }
+  },
+
+
+  /**
+   *
    * @param {String} mode 排行榜类型  ['day', 'week', 'month', 'week_rookie', 'week_original', 'day_male', 'day_female', 'day_r18', 'week_r18', 'day_male_r18', 'day_female_r18', 'week_r18g']
    * @param {Number} page 页数
    * @param {String} date YYYY-MM-DD 默认为「前天」
