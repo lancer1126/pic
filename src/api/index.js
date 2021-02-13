@@ -251,8 +251,50 @@ const api = {
       rankList = SessionStorage.get(`rankList_${mode}_${date}_${page}`)
     }
 
-
     return { status: 0, data: rankList }
+  },
+
+  /**
+   *
+   * @param {String} word 关键词
+   * @param {Number} page 页数
+   */
+  async search(word, page = 1) {
+    let searchList, key = `searchList_${Base64.encode(word)}_${page}`
+    if (!SessionStorage.has(key)) {
+
+      let res = await get('/pixiv/', {
+        type: 'search',
+        word,
+        page
+      })
+
+      let data
+      if (res.illusts) {
+        data = res.illusts
+      } else if (res.error) {
+        return {
+          status: -1,
+          msg: res.error.user_message || res.error.message
+        }
+      } else {
+        return {
+          status: -1,
+          msg: '未知错误'
+        }
+      }
+
+      searchList = data.map(art => {
+        return parseIllust(art)
+      })
+
+      SessionStorage.set(key, searchList, 60 * 60 * 24)
+    } else {
+      searchList = SessionStorage.get(key)
+    }
+
+
+    return { status: 0, data: searchList }
   },
 }
 
