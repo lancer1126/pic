@@ -1,5 +1,5 @@
 import { get} from "@/api/http"
-import { SessionStorage } from "@/utils/storage";
+import {LocalStorage, SessionStorage} from "@/utils/storage";
 import moment from 'moment'
 
 const isSupportWebP = (() => {
@@ -296,6 +296,45 @@ const api = {
 
     return { status: 0, data: searchList }
   },
+
+  /**
+   *
+   * @param {Number} id 作品ID
+   */
+  async getArtwork(id) {
+    let artwork
+    if (!LocalStorage.has(`artwork_${id}`)) {
+
+      let res = await get('/pixiv/', {
+        type: 'illust',
+        id
+      })
+
+      let data
+      if (res.illust) {
+        data = res.illust
+      } else if (res.error) {
+        return {
+          status: -1,
+          msg: res.error.user_message || res.error.message
+        }
+      } else {
+        return {
+          status: -1,
+          msg: '未知错误'
+        }
+      }
+
+      artwork = parseIllust(data)
+
+      LocalStorage.set(`artwork_${id}`, artwork)
+    } else {
+      artwork = LocalStorage.get(`artwork_${id}`)
+    }
+
+
+    return { status: 0, data: artwork }
+  }
 }
 
 export default api
