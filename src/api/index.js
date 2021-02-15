@@ -334,7 +334,42 @@ const api = {
 
 
     return { status: 0, data: artwork }
-  }
+  },
+
+  /**
+   *
+   * @param {Number} id 作品ID
+   */
+  async ugoiraMetadata(id) {
+    let ugoira
+    if (!LocalStorage.has(`ugoira_${id}`)) {
+
+      let res = await get('/pixiv/', {
+        type: 'ugoira_metadata',
+        id
+      })
+
+      if (res.error) {
+        return {
+          status: -1,
+          msg: res.error.user_message || res.error.message
+        }
+      } else {
+        ugoira = {
+          zip: imgProxy(res.ugoira_metadata.zip_urls.medium),
+          frames: res.ugoira_metadata.frames
+        }
+      }
+
+      LocalStorage.set(`ugoira_${id}`, ugoira)
+    } else {
+      ugoira = LocalStorage.get(`ugoira_${id}`)
+    }
+
+
+    return { status: 0, data: ugoira }
+  },
+
 }
 
 export default api
