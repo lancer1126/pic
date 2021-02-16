@@ -370,6 +370,37 @@ const api = {
     return { status: 0, data: ugoira }
   },
 
+  /**
+   *
+   * @param {Number} id 画师ID
+   */
+  async getMemberInfo(id) {
+    let memberInfo
+    if (!LocalStorage.has(`memberInfo_${id}`)) {
+
+      let res = await get('/pixiv/', {
+        type: 'member',
+        id
+      })
+
+      if (res.error) {
+        return {
+          status: -1,
+          msg: res.error.user_message || res.error.message
+        }
+      } else {
+        memberInfo = parseUser(res)
+      }
+
+      LocalStorage.set(`memberInfo_${id}`, memberInfo)
+    } else {
+      memberInfo = LocalStorage.get(`memberInfo_${id}`)
+    }
+
+
+    return { status: 0, data: memberInfo }
+  },
+
 }
 
 export default api
