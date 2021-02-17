@@ -401,6 +401,48 @@ const api = {
     return { status: 0, data: memberInfo }
   },
 
+  /**
+   *
+   * @param {Number} id 画师ID
+   * @param {Number} page 页数
+   */
+  async getMemberArtwork(id, page) {
+    let memberArtwork
+    if (!LocalStorage.has(`memberArtwork_${id}_p${page}`)) {
+
+      let res = await get('/pixiv/', {
+        type: 'member_illust',
+        id,
+        page
+      })
+
+      let data
+      if (res.illusts) {
+        data = res.illusts
+      } else if (res.error) {
+        return {
+          status: -1,
+          msg: res.error.user_message || res.error.message
+        }
+      } else {
+        return {
+          status: -1,
+          msg: '未知错误'
+        }
+      }
+
+      memberArtwork = data.map(art => {
+        return parseIllust(art)
+      })
+
+      LocalStorage.set(`memberArtwork_${id}_p${page}`, memberArtwork)
+    } else {
+      memberArtwork = LocalStorage.get(`memberArtwork_${id}_p${page}`)
+    }
+
+    return { status: 0, data: memberArtwork }
+  },
+
 }
 
 export default api
