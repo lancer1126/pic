@@ -9,7 +9,7 @@
         <Icon class="icon" name="search" index="Search" :current-index="$route.name" />
         <span>搜索</span>
       </li>
-      <li @click="navigateTo('Rank')">
+      <li @click="navigateTo('Rank', {type: 'daily'})">
         <Icon class="icon" name="rank" index="Rank" :current-index="$route.name" />
         <span>排行榜</span>
       </li>
@@ -47,8 +47,8 @@ export default {
   bottom: 0;
   left: 0;
   width: 100%;
-  //height: 100px;
-  height: calc(100px + env(safe-area-inset-bottom));
+  height: 100px;
+  //height: calc(100px + env(safe-area-inset-bottom));
   z-index: 10;
 
   .nav-bar {

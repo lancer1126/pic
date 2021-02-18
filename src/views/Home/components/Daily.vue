@@ -53,7 +53,7 @@ export default {
       return list.filter((_, index) => (index + 1) % 2)
     },
     even (list) {
-      return list.filter((_, index) => !(index + 1) % 2)
+      return list.filter((_, index) => !((index + 1) % 2))
     },
     toArtwork(id) {
       this.$router.push({
