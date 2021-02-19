@@ -10,7 +10,7 @@ import VCalendar from 'v-calendar'
 import { Toast, Lazyload, ImagePreview } from "vant";
 
 import './polyfill'
-import 'swiper/swiper-bundle.css'
+import 'swiper/css/swiper.css'
 import '@/assets/css/base.styl'
 
 Vue.use(Moment)

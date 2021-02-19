@@ -9,59 +9,40 @@
   },
   "dependencies": {
     "@vant/touch-emulator": "^1.2.0",
-    "axios": "^0.21.1",
-    "core-js": "^3.8.3",
-    "file-saver": "^2.0.5",
+    "axios": "^0.19.2",
+    "core-js": "^3.6.4",
+    "file-saver": "^2.0.2",
     "gif.js": "^0.2.0",
     "gifshot": "^0.4.5",
-    "js-base64": "^3.6.0",
+    "js-base64": "^2.5.2",
     "jszip": "^3.4.0",
-    "lodash": "^4.17.20",
-    "moment": "^2.29.1",
-    "swiper": "^6.4.10",
+    "lodash": "^4.17.15",
+    "moment": "^2.24.0",
+    "swiper": "^5.3.6",
     "v-calendar": "^1.0.3",
-    "vant": "^2.12.6",
-    "vue": "^2.6.11",
+    "vant": "^2.6.0",
+    "vue": "2.6.12",
     "vue-awesome-swiper": "^4.1.0",
+    "vue-concise-slider": "^3.4.4",
     "vue-moment": "^4.1.0",
-    "vue-router": "^3.5.1",
-    "vuex": "^3.6.2",
+    "vue-router": "3.1.5",
+    "vuex": "3.1.2",
     "whammy": "^0.0.1"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-plugin-babel": "^4.2.0",
+    "@vue/cli-plugin-eslint": "^4.2.0",
     "@vue/cli-plugin-router": "^4.2.0",
     "@vue/cli-plugin-vuex": "^4.2.0",
-    "@vue/cli-service": "~4.5.0",
-    "babel-eslint": "^10.1.0",
+    "@vue/cli-service": "^4.2.0",
+    "babel-eslint": "^10.0.3",
     "babel-plugin-import": "^1.13.0",
     "eslint": "^6.7.2",
-    "eslint-friendly-formatter": "^4.0.1",
-    "eslint-plugin-vue": "^6.2.2",
+    "eslint-plugin-vue": "^6.1.2",
     "postcss-pxtorem": "^5.1.1",
-    "stylus": "^0.54.8",
+    "stylus": "^0.54.7",
     "stylus-loader": "^3.0.2",
     "vue-svg-icon": "^1.2.9",
-    "vue-template-compiler": "^2.6.11"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "babel-eslint"
-    },
-    "rules": {}
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ]
+    "vue-template-compiler": "2.6.12"
+  }
 }

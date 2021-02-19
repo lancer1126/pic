@@ -5,6 +5,7 @@ import BaseLayout from '@/layouts/BaseLayout';
 import MainLayout from '@/layouts/MainLayout';
 
 import Home from '@/views/Home'
+import Artwork from '@/views/Artwork'
 
 Vue.use(VueRouter)
 
@@ -27,6 +28,18 @@ const routes = [
             name: 'Home',
             component: Home
           },
+        ]
+      },
+      {
+        path: '/',
+        component: MainLayout,
+        props: { showNav: false },
+        children: [
+          {
+            path: '/artwork/:id',
+            name: 'Artwork',
+            component: Artwork
+          }
         ]
       }
     ]
