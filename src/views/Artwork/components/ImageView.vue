@@ -5,14 +5,15 @@
        ref="view"
   >
     <div class="image-box"
-         v-for="(url, index) in artwork.images" :key="index"
+         v-for="(url, index) in artwork.images"
+         :key="index"
          :style="index === 0 ? {width:`${displayWidth}px`, height: `${displayWidth / (artwork.width / artwork.height)}px`} : null"
     >
       <img v-if="lazy"
            v-lazy="url.l"
            :alt="`${artwork.title} - Page ${index+1}`"
-           class="image" @
-           click.stop="view(index, isCensored(artwork))" />
+           class="image"
+           @click.stop="view(index, isCensored(artwork))" />
       <img v-else
            class="image"
            :src="url.l"
@@ -44,7 +45,7 @@
 </template>
 
 <script>
-import {mapGetters} from "vuex";
+import {mapGetters, mapState} from "vuex";
 import { ImagePreview } from 'vant'
 import api from "@/api";
 import JSZip from "jszip";
@@ -77,17 +78,21 @@ export default {
     }
   },
   watch: {
-
+    artwork (val) {
+      if (val.images && val.images.length > 0)
+        this.init()
+    }
   },
   computed: {
     original () {
       return this.artwork.images.map(url => url.o)
     },
-    ...mapGetters(['isCensored'])
+    ...mapGetters(['isCensored']),
+    ...mapState(['$swiper'])
   },
   methods: {
     showFull () {
-      if (this.shrink) this.isShrink = false
+      if (this.isShrink) this.isShrink = false
     },
     view (index, censored) {
       if (censored) {
@@ -331,11 +336,7 @@ export default {
         this.displayWidth = document.getElementById('app').getBoundingClientRect().width
         this.displayHeight = this.displayWidth / (this.artwork.width / this.artwork.height)
         setTimeout(() => {
-          if (this.artwork.images && this.artwork.images.length >= 3) {
-            this.isShrink = true
-          } else {
-            this.isShrink = false
-          }
+          this.isShrink = this.artwork.images && this.artwork.images.length >= 3;
         }, 0)
       })
     }

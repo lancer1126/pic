@@ -8,6 +8,13 @@
           ref="imgView"
           @open-download="ugoiraDownloadPanelShow = true"
       />
+      <van-skeleton class="skeleton" avatar :row="3" :avatar-size="'42px'" :loading="loading">
+        <Meta :artwork="artwork" />
+      </van-skeleton>
+      <van-divider />
+      <keep-alive>
+        <AuthorCard v-if="artwork.author" :id="artwork.author.id" :key="artwork.id" />
+      </keep-alive>
     </div>
   </div>
 </template>
@@ -15,11 +22,21 @@
 <script>
 import TopBar from "@/components/TopBar";
 import ImageView from "@/views/Artwork/components/ImageView";
+import Meta from "@/views/Artwork/components/Meta";
+import AuthorCard from "@/views/Artwork/components/AuthorCard";
 import api from "@/api";
 import {mapGetters} from "vuex";
+import { Divider, Skeleton } from 'vant'
 export default {
   name: 'Artwork',
-  components: {ImageView, TopBar},
+  components: {
+    ImageView,
+    TopBar,
+    Meta,
+    AuthorCard,
+    [Divider.name]: Divider,
+    [Skeleton.name]: Skeleton
+  },
   data() {
     return {
       loading: false,
@@ -38,7 +55,10 @@ export default {
     }
   },
   watch: {
-
+    $route () {
+      if (this.$route.name === 'Artwork' && this.$route.params.id !== this.artwork.id)
+        this.init()
+    }
   },
   computed: {
     ...mapGetters(['isCensored'])
@@ -56,13 +76,13 @@ export default {
             icon: require('@/svg/ban-view.svg')
           })
           setTimeout(() => {}, 5000)
-        } else {
-          this.$toast({
-            message: res.msg,
-            icon: require('@/svg/error.svg')
-          })
-          setTimeout(() => { this.$router.back()}, 500)
         }
+      } else {
+        this.$toast({
+          message: res.msg,
+          icon: require('@/svg/error.svg')
+        })
+        setTimeout(() => { this.$router.back()}, 500)
       }
     },
     init () {
