@@ -53,7 +53,7 @@ export default {
       memberArtwork: null,
       swiperOption: {
         freeMode: true,
-        slidePreview: 'auto'
+        slidesPerView: 'auto'
       }
     }
   },
