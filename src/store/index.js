@@ -9,6 +9,7 @@ export default new Vuex.Store({
     themeColor: '#0196fa',
     galleryList: [],
     currentIndex: -1,
+    $swiper: null,
     SETTING: LocalStorage.get('__PIXIV_SETTING', {
       r18: false,
       r18g: false

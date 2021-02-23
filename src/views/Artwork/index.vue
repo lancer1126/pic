@@ -15,7 +15,20 @@
       <keep-alive>
         <AuthorCard v-if="artwork.author" :id="artwork.author.id" :key="artwork.id" />
       </keep-alive>
+      <van-divider />
+      <keep-alive>
+        <Related :artwork="artwork" :key="artwork.id" />
+      </keep-alive>
     </div>
+    <van-action-sheet
+        v-model="ugoiraDownloadPanelShow"
+        :actions="ugoiraDownloadPanelActions"
+        @select="onUgoiraDownloadPanelSelect"
+        cancel-text="取消"
+        description="请选择下载格式"
+        close-on-popstate
+        close-on-click-action
+    />
   </div>
 </template>
 
@@ -24,9 +37,10 @@ import TopBar from "@/components/TopBar";
 import ImageView from "@/views/Artwork/components/ImageView";
 import Meta from "@/views/Artwork/components/Meta";
 import AuthorCard from "@/views/Artwork/components/AuthorCard";
+import Related from "@/views/Artwork/components/Related";
 import api from "@/api";
-import {mapGetters} from "vuex";
-import { Divider, Skeleton } from 'vant'
+import { mapGetters, mapState } from "vuex";
+import { Divider, Skeleton,ActionSheet } from 'vant'
 export default {
   name: 'Artwork',
   components: {
@@ -34,8 +48,10 @@ export default {
     TopBar,
     Meta,
     AuthorCard,
+    Related,
     [Divider.name]: Divider,
-    [Skeleton.name]: Skeleton
+    [Skeleton.name]: Skeleton,
+    [ActionSheet.name]: ActionSheet
   },
   data() {
     return {
@@ -61,7 +77,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['isCensored'])
+    ...mapState(["galleryList", "currentIndex", "$swiper"]),
+    ...mapGetters(["currentId", "isCensored"])
   },
   methods: {
     async getArtwork (id) {
@@ -91,6 +108,9 @@ export default {
       let id = +this.$route.params.id
       this.artwork = {}
       this.getArtwork(id)
+    },
+    onUgoiraDownloadPanelSelect (item) {
+      this.$refs.imgView.download(item.name)
     }
   },
   mounted() {
