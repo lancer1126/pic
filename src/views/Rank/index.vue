@@ -27,19 +27,36 @@
               :finished="finished" finished-text="没有更多了"
               :error.sync="error" error-text="网络异常，点击重新加载"
               @load="getRankList"
-    ></van-list>
+    >
+      <div class="card-box">
+        <div class="column">
+          <ImageCard mode="cover" :artwork="art" @click-card="toArtwork($event)"
+                     v-for="art in odd(artList.slice(3))" :key="art.id"
+          />
+        </div>
+        <div class="column">
+          <ImageCard mode="cover" :artwork="art" @click-card="toArtwork($event)"
+              v-for="art in even(artList.slice(3))" :key="art.id"
+          />
+        </div>
+      </div>
+    </van-list>
+    <van-loading v-show="!artList || artList.length === 0" class="loading" :size="'50px'" />
   </div>
 </template>
 
 <script>
 import Nav from "@/views/Rank/components/RankNav";
 import Top3 from "@/views/Rank/components/Top3";
-import { List, Loading, Empty } from 'vant'
+import { List, Loading, Empty } from 'vant';
 import moment from "moment";
-import _ from 'lodash'
+import _ from 'lodash';
+import api from '@/api';
+import ImageCard from "@/components/ImageCard";
 export default {
   name: 'Rank',
   components: {
+    ImageCard,
     Nav,
     Top3,
     [List.name]: List,
@@ -58,6 +75,7 @@ export default {
       loading: false,
       finished: false,
       error: false,
+      isDatePickerShow: false,
       menu: {
         daily: { name: "日榜", io: "day" },
         weekly: { name: "周榜", io: "week" },
@@ -76,6 +94,18 @@ export default {
   computed: {
     dateNum () {
       return moment(this.date).date()
+    }
+  },
+  watch: {
+    $route() {
+      if (this.$route.name === 'Rank' && this.$route.params.type !== this.curType) {
+        this.init()
+      }
+    },
+    date (val, old) {
+      if (val !== old) {
+        this.init()
+      }
     }
   },
   methods: {
@@ -112,7 +142,22 @@ export default {
         this.error = true
       }
       this.isLoading = false
-    }, 5000)
+    }, 5000),
+    odd(list) {
+      return list.filter((_, index) => (index + 1) % 2)
+    },
+    even(list) {
+      return list.filter((_, index) => !((index + 1) % 2))
+    },
+    toArtwork(id) {
+      this.$router.push({
+        name: 'Artwork',
+        params: {id, list: this.artList }
+      })
+    },
+    mounted() {
+      this.init()
+    }
   }
 }
 </script>
@@ -122,6 +167,13 @@ export default {
   //padding-top: 100px;
   padding-top: env(safe-area-inset-top);
   box-sizing: border-box;
+
+  .loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 
   .top {
     position: fixed;
@@ -155,6 +207,35 @@ export default {
         font-size: 26px;
         font-weight: 600;
         letter-spacing: 4px;
+      }
+    }
+
+    ::v-deep .vc-popover-content-wrapper {
+      top: 90px !important;
+      left: auto !important;
+      right: 14px;
+      transform: none !important;
+
+      .vc-popover-caret {
+        left: 94% !important;
+      }
+    }
+  }
+
+  .rank-list {
+    margin: 0 2px;
+
+    .card-box {
+      display: flex;
+      flex-direction: row;
+
+      .column {
+        width: 50%;
+
+        .image-card {
+          max-height: 360px;
+          margin: 4px 2px;
+        }
       }
     }
   }

@@ -6,6 +6,7 @@ import MainLayout from '@/layouts/MainLayout';
 
 import Home from '@/views/Home'
 import Artwork from '@/views/Artwork'
+import Rank from '@/views/Rank'
 
 Vue.use(VueRouter)
 
@@ -28,6 +29,15 @@ const routes = [
             name: 'Home',
             component: Home
           },
+          {
+            path: '/rank',
+            redirect: '/rank/daily'
+          },
+          {
+            path: '/rank/:type',
+            name: 'Rank',
+            component: Rank
+          }
         ]
       },
       {

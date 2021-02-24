@@ -36,7 +36,6 @@ class Storage {
       this.drive.setItem(key, serialize(data))
     }
     catch (e) {
-      console.log("Local Storage is full, Please empty data");
     }
     return val
   }

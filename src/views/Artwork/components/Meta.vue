@@ -100,7 +100,6 @@ export default {
       let w = Math.ceil(ctx.measureText(txt).width)
       // txt = new Array(w * 2).join(txt + " ")
       let h = Math.sqrt(width ** 2 + height ** 2) * 2
-      console.log(w, Math.ceil(h / txtHeight))
       for (let i = 0; i < h / txtHeight; i++) {
         for (let j = 0; j < w; j++) {
           if (i === Math.floor(h / txtHeight / 2) && j === 2) {
