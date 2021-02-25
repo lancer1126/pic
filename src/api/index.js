@@ -443,6 +443,50 @@ const api = {
     return { status: 0, data: memberArtwork }
   },
 
+  /**
+   *
+   * @param {Number} id 画师ID
+   * @param {Number} max_bookmark_id max_bookmark_id
+   */
+  async getMemberFavorite(id, max_bookmark_id) {
+    let memberFavorite = {}
+    if (!LocalStorage.has(`memberFavorite_${id}_m${max_bookmark_id}`)) {
+
+      let res = await get('/pixiv/', {
+        type: 'favorite',
+        id,
+        max_bookmark_id
+      })
+
+      let data
+      if (res.illusts) {
+        data = res
+      } else if (res.error) {
+        return {
+          status: -1,
+          msg: res.error.user_message || res.error.message
+        }
+      } else {
+        return {
+          status: -1,
+          msg: '未知错误'
+        }
+      }
+
+      const url = new URLSearchParams(data.next_url)
+      memberFavorite.next = url.get('max_bookmark_id')
+      memberFavorite.illusts = data.illusts.map(art => {
+        return parseIllust(art)
+      })
+
+      LocalStorage.set(`memberFavorite_${id}_m${max_bookmark_id}`, memberFavorite)
+    } else {
+      memberFavorite = LocalStorage.get(`memberFavorite_${id}_m${max_bookmark_id}`)
+    }
+
+    return { status: 0, data: memberFavorite }
+  },
+
 }
 
 export default api
