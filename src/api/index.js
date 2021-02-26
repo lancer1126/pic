@@ -487,6 +487,45 @@ const api = {
     return { status: 0, data: memberFavorite }
   },
 
+  async getTags() {
+    let tags
+    if (!LocalStorage.has(`tags`)) {
+
+      let res = await get('/pixiv/', {
+        type: 'tags'
+      })
+
+      if (res.trend_tags) {
+        let temp = res.trend_tags
+
+        tags = temp.map(data => {
+          let { tag, translated_name } = data
+          return {
+            name: tag,
+            tname: translated_name,
+            pic: imgProxy(data.illust.image_urls.square_medium)
+          }
+        })
+      } else if (res.error) {
+        return {
+          status: -1,
+          msg: res.error.user_message || res.error.message
+        }
+      } else {
+        return {
+          status: -1,
+          msg: '未知错误'
+        }
+      }
+
+      LocalStorage.set(`tags`, tags, 60 * 60 * 24)
+    } else {
+      tags = LocalStorage.get(`tags`)
+    }
+
+    return { status: 0, data: tags }
+  }
+
 }
 
 export default api
