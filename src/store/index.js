@@ -10,6 +10,7 @@ export default new Vuex.Store({
     galleryList: [],
     currentIndex: -1,
     $swiper: null,
+    searchHistory: LocalStorage.get('__PIXIV_searchHistory', []),
     SETTING: LocalStorage.get('__PIXIV_SETTING', {
       r18: false,
       r18g: false
@@ -31,6 +32,24 @@ export default new Vuex.Store({
     saveSETTING (state, obj) {
       state.SETTING = obj
       LocalStorage.set('__PIXIV_SETTING', state.SETTING)
+    },
+    setSearchHistory (state, obj) {
+      if (obj === null) {
+        state.searchHistory = []
+        LocalStorage.remove('__PIXIV_searchHistory')
+      } else {
+        if (state.searchHistory.includes(obj))
+          return false
+        if (state.searchHistory.length >= 20)
+          state.searchHistory.shift()
+        state.searchHistory.push(obj)
+        LocalStorage.set('__PIXIV_searchHistory', state.searchHistory)
+      }
+    }
+  },
+  actions: {
+    setSearchHistory ({ commit }, value) {
+      commit('setSearchHistory', value)
     }
   }
 })

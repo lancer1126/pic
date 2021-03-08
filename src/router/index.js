@@ -7,6 +7,7 @@ import MainLayout from '@/layouts/MainLayout';
 import Home from '@/views/Home'
 import Artwork from '@/views/Artwork'
 import Rank from '@/views/Rank'
+import Search from '@/views/Search'
 
 Vue.use(VueRouter)
 
@@ -28,6 +29,11 @@ const routes = [
             path: '/home',
             name: 'Home',
             component: Home
+          },
+          {
+            path: '/search',
+            name: 'Search',
+            component: Search
           },
           {
             path: '/rank',

@@ -1,34 +1,124 @@
 <template>
   <div class="search">
-    <form class="search-bar-wrap" :class="{ dropdown: focus}" action="/">
+    <form class="search-bar-wrap" :class="{ dropdown: focus }" action="/">
       <van-search
-        class="search-bar"
-        v-model="keywords"
-        shape="round"
-        placeholder="请输入搜索关键词"
-        maxlength="50"
-        @search="onBlur(true)"
-        @cancel="oncancel"
-        @focus="onfocus"
-        @blur="onBlur(false)"
+        class="search-bar" v-model="keywords"
+        shape="round" placeholder="请输入搜索关键词" maxlength="50"
+        @search="onBlur(true)" @cancel="onCancel"
+        @focus="onFocus" @blur="onBlur(false)"
       ></van-search>
 
+      <div class="search-bar-word" @click="handleWordsClick($event)" ref="words">
+        <span class="placeholder" v-if="keywordsList.length === 0 && !lastWord">请输入搜索关键词</span>
+        <div class="word" v-for="(keyword, index) in keywordsList" :key="index">
+          <span class="text">{{ keyword }}</span>
+          <span class="close" :data-index="index"></span>
+        </div>
+        <div class="word" v-if="lastWord">
+          <span class="text no-line">{{ lastWord }}</span>
+        </div>
+      </div>
+
+      <div class="search-history" v-if="searchHistory.length > 0 && focus">
+        <div class="title-bar">
+          历史搜索
+          <div @click="clearHistory">
+            <Icon name="del" scale="2" />
+          </div>
+        </div>
+        <div class="keyword" @click="searchTag(keyword)"
+             v-for="(keyword, index) in searchHistory"
+             :key="index"
+        >{{ keyword }}</div>
+      </div>
+
+      <transition-group name="fade">
+        <ImageSearch
+          v-show="!focus && imageSearchShow"
+          @show="switchImageSearchShow(true)"
+          ref="imageSearch"
+          key="container"
+        ></ImageSearch>
+        <div
+          class="image-search-mask"
+          @click="switchImageSearchShow(false)"
+          v-show="!focus && maskShow"
+          key="mask"
+        ></div>
+      </transition-group>
     </form>
+
+    <div class="list-wrap" :class="{focus: focus}">
+      <van-list v-if="artList.length > 0" class="result-list"
+                v-model="loading" :finished="finished" finished-text="没有更多了"
+                :error.sync="error" error-text="网络异常，点击重新加载" @load="search"
+      >
+        <div class="card-box">
+          <div class="column">
+            <ImageCard
+              mode="cover"
+              :artwork="art"
+              v-for="art in odd(artList.slice(3))"
+              @click-card="toArtwork($event)"
+              :key="art.id"
+            />
+          </div>
+          <div class="column">
+            <ImageCard
+              mode="cover"
+              :artwork="art"
+              v-for="art in even(artList.slice(3))"
+              @click-card="toArtwork($event)"
+              :key="art.id"
+            />
+          </div>
+        </div>
+      </van-list>
+
+      <Tags v-if="keywords.trim() === ''" @search="searchTag" />
+      <van-loading
+        class="loading"
+        :size="'50px'"
+        v-show="keywords.trim() !== '' && artList.length === 0"
+      />
+      <div class="mask" @click="onBlur(true)"></div>
+    </div>
   </div>
 </template>
 
 <script>
-import Tags from "@/views/Search/components/Tags";
-import { Search } from 'vant'
+import { Search, List, Loading, Empty, Icon } from 'vant'
+import Tags from "./components/Tags";
+import ImageCard from "@/components/ImageCard";
+import ImageSearch from "@/views/Search/components/ImageSearch";
+import { mapState, mapActions } from 'vuex'
+import _ from 'lodash'
+import api from '@/api'
+
 export default {
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      document.querySelector(".app-main").scrollTo(0, vm.scrollTop);
+    });
+  },
+  beforeRouteLeave(to, from, next) {
+    this.scrollTop = document.querySelector(".app-main").scrollTop;
+    next();
+  },
   components: {
+    ImageSearch,
     Tags,
-    [Search.name]: Search
+    ImageCard,
+    [Search.name]: Search,
+    [List.name]: List,
+    [Loading.name]: Loading,
+    [Empty.name]: Empty,
+    [Icon.name]: Icon
   },
   data() {
     return {
       scrollTop: 0,
-      keywords_: "",
+      keywords__: "",
       keywords: "",
       keywordsList: [],
       lastWord: "",
@@ -42,7 +132,44 @@ export default {
       imageSearchShow: true
     }
   },
+  watch: {
+    $route() {
+      let keyword = this.$route.params.keyword
+      if (!keyword || this.keywords.trim() === keyword.trim()) return
+      this.keywords = keyword + ' '
+      this.reset()
+      this.search(this.keywords)
+    },
+    keywords () {
+      // 当关键词内容发生变化
+      let keywordsList = this.keywords
+          .replace(/\s\s+/g, " ") // 去除多余的空格
+          .trimLeft() // 去除开头空白字符
+          .split(' ');  // 按空格分割
+
+      if (keywordsList.length === 1 && keywordsList[0] === '') {
+        // 只输入空格的情况下清除关键词列表并返回
+        this.keywordsList = []
+        this.reset()
+        return
+      }
+
+      // 最顶部的元素即为正在输入的关键词
+      this.lastWord = keywordsList.pop()
+      this.keywordsList = keywordsList
+      this.$nextTick(() => {
+        this.$refs.words.scrollLeft = this.$refs.words.clientWidth
+        let listWrap = document.querySelector('.list-wrap')
+        listWrap && listWrap.scrollTo({ top: 0 })
+      })
+    }
+  },
+  computed: {
+    ...mapState(['searchHistory'])
+
+  },
   methods: {
+    ...mapActions(['setSearchHistory']),
     reset () {
       this.curPage = 1
       this.artList = []
@@ -51,7 +178,6 @@ export default {
     },
     onBlur (flag) {
       let keywords = `${this.keywords} `.replace(/\s\s+/g, " "); // 去除多余空格
-
       this.keywords = keywords
       this.$nextTick(() => {
         this.$refs.words.scrollLeft = this.$refs.words.clientWidth
@@ -72,18 +198,101 @@ export default {
 
       if (flag) {
         this.focus = false
-        if (this.keywords_ === keywords) {
+        if (this.keywords__ === keywords) {
           return false
         } else {
           this.reset()
         }
       }
+    },
+    onCancel () {},
+    onFocus () {
+      this.focus = true // 获取焦点
+    },
+    handleWordsClick (e) {
+      // 处理点击事件
+      let target = e.target
+      if (target.className !== 'close') {
+        document.querySelector('input[type="search"]').focus()
+      } else {
+        let keywordsList = this.keywords.trim().split(" ")
+        keywordsList.splice(target.dataset.index, 1)
+        this.keywords = keywordsList.join(" ") + " "
+        this.reset()
+        this.search(this.keywords)
+      }
+    },
+    search: _.throttle(async function (val) {
+      val = val || this.keywords
+      this.keywords__ = val
+      val = val.trim()
+      if (val === '') {
+        this.keywords = ''
+        this.reset()
+        return
+      }
+      this.setSearchHistory(val)
+
+      let res = await api.search(val, this.curPage)
+      if (res.status === 0) {
+        let newList = res.data
+        let artList = JSON.parse(JSON.stringify(this.artList))
+        artList.push(...newList)
+        artList = _.uniqBy(artList, 'id')
+
+        this.artList = artList
+        this.loading = false
+        this.curPage++
+        if (this.curPage > 5)
+          this.finished = true
+      } else {
+        this.$toast({ message: res.msg })
+        this.loading = false
+        this.error = true
+      }
+      this.loading = false
+    }, 5000),
+    clearHistory () {
+      this.setSearchHistory(null)
+    },
+    searchTag (keywords) {
+      this.keywords = keywords + ' '
+      this.onBlur(true)
+    },
+    odd (list) {
+      return list.filter((_, index) => (index + 1) % 2)
+    },
+    even (list) {
+      return list.filter((_, index) => !((index + 1) % 2))
+    },
+    toArtwork (id) {
+      this.$router.push({
+        name: 'Artwork',
+        params: { id, list: this.artList }
+      })
+    },
+    switchImageSearchShow (flag) {
+      if (!flag)
+        this.$refs.imageSearch.reset()
+      this.maskShow = flag
+    }
+  },
+  mounted() {
+    let input = document.querySelector('input[type="search"]')
+    document.addEventListener('selectionchange', () => {
+      if (this.focus)
+        input.setSelectionRange(input.value.length, input.value.length)
+    })
+
+    let keyword = this.$route.params.keyword
+    if (this.$route.name === 'Search' && keyword) {
+      this.keywords = keyword + ' '
+      this.reset()
+      this.search(this.keywords)
     }
   }
 }
 </script>
-
-
 
 <style lang="stylus" scoped>
 .fade-enter-active, .fade-leave-active {
