@@ -58,8 +58,8 @@
             <ImageCard
               mode="cover"
               :artwork="art"
-              v-for="art in odd(artList.slice(3))"
               @click-card="toArtwork($event)"
+              v-for="art in odd(artList.slice(3))"
               :key="art.id"
             />
           </div>
@@ -67,8 +67,8 @@
             <ImageCard
               mode="cover"
               :artwork="art"
-              v-for="art in even(artList.slice(3))"
               @click-card="toArtwork($event)"
+              v-for="art in even(artList.slice(3))"
               :key="art.id"
             />
           </div>
@@ -96,15 +96,6 @@ import _ from 'lodash'
 import api from '@/api'
 
 export default {
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      document.querySelector(".app-main").scrollTo(0, vm.scrollTop);
-    });
-  },
-  beforeRouteLeave(to, from, next) {
-    this.scrollTop = document.querySelector(".app-main").scrollTop;
-    next();
-  },
   components: {
     ImageSearch,
     Tags,

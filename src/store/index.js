@@ -50,6 +50,9 @@ export default new Vuex.Store({
   actions: {
     setSearchHistory ({ commit }, value) {
       commit('setSearchHistory', value)
+    },
+    saveSETTING({ commit }, value) {
+      commit('saveSETTING', value)
     }
   }
 })

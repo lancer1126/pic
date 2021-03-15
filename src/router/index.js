@@ -8,6 +8,7 @@ import Home from '@/views/Home'
 import Artwork from '@/views/Artwork'
 import Rank from '@/views/Rank'
 import Search from '@/views/Search'
+import Setting from '@/views/Setting'
 
 Vue.use(VueRouter)
 
@@ -43,6 +44,11 @@ const routes = [
             path: '/rank/:type',
             name: 'Rank',
             component: Rank
+          },
+          {
+            path: '/setting',
+            name: 'Setting',
+            component: Setting
           }
         ]
       },
