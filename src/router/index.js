@@ -9,6 +9,7 @@ import Artwork from '@/views/Artwork'
 import Rank from '@/views/Rank'
 import Search from '@/views/Search'
 import Setting from '@/views/Setting'
+import User from '@/views/Users'
 
 Vue.use(VueRouter)
 
@@ -61,6 +62,11 @@ const routes = [
             path: '/artwork/:id',
             name: 'Artwork',
             component: Artwork
+          },
+          {
+            path: '/users/:id',
+            name: 'Users',
+            component: User
           }
         ]
       }
