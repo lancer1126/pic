@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import Nav from "@/views/Rank/components/RankNav";
+import Nav from "./components/Nav";
 import Top3 from "@/views/Rank/components/Top3";
 import { List, Loading, Empty } from 'vant';
 import moment from "moment";
@@ -154,10 +154,10 @@ export default {
         name: 'Artwork',
         params: {id, list: this.artList }
       })
-    },
-    mounted() {
-      this.init()
     }
+  },
+  mounted() {
+    this.init()
   }
 }
 </script>

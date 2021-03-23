@@ -1,6 +1,7 @@
 import { get} from "@/api/http"
 import {LocalStorage, SessionStorage} from "@/utils/storage";
 import moment from 'moment'
+import { Base64 } from 'js-base64'
 
 const isSupportWebP = (() => {
   const elem = document.createElement('canvas')

@@ -123,6 +123,15 @@ export default {
       imageSearchShow: true
     }
   },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      document.querySelector(".app-main").scrollTo(0, vm.scrollTop);
+    });
+  },
+  beforeRouteLeave(to, from, next) {
+    this.scrollTop = document.querySelector(".app-main").scrollTop;
+    next();
+  },
   watch: {
     $route() {
       let keyword = this.$route.params.keyword
@@ -180,11 +189,11 @@ export default {
           params: {
             id: keywords.trim()
           }
-        });
-        this.keywords = "";
-        this.keywordsList = [];
-        this.lastWord = "";
-        return;
+        })
+        this.keywords = ''
+        this.keywordsList = []
+        this.lastWord = ''
+        return
       }
 
       if (flag) {
@@ -193,6 +202,7 @@ export default {
           return false
         } else {
           this.reset()
+          this.search(this.keywords)
         }
       }
     },
